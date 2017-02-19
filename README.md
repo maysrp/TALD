@@ -76,7 +76,8 @@ http://your_domain/index.php/Admin/login
 进入后台 管理视频时候请注意了 如果采用old 方法时删除视频不带删除 源视频，即/download下的视频将会保持。
 
 
-## 使用
+## 感谢
 [Thinkphp 3.1.3] (http://www.thinkphp.cn/) 
 [Php-aria2] (https://github.com/shiny/php-aria2)
 [Dplayer] (https://github.com/DIYgod/DPlayer)
+[PHPQuery] (https://github.com/TobiaszCudnik/phpquery)
