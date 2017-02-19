@@ -1,0 +1,42 @@
+<script type="text/javascript" src="https://cdn.bootcss.com/dplayer/1.1.2/DPlayer.min.js"></script>
+
+<include file="Public/head" />
+<include file="Public/search"/>
+
+<div class="row">
+	<h3>{$info['name']} <small><span class="glyphicon glyphicon-signal"></span> {$info['click']} <a href="{$info['magnet']}"><span class="glyphicon glyphicon-magnet"></span></small></a></h3>
+	<p> 发布于 <span class="glyphicon glyphicon-time"></span> {$info['time']|date="Y-m-d H:i",###}</p>
+	<div id="vid" class="hide">{$info['vid']}</div>
+	<div id="player1" class="dplayer"></div>
+	<script type="text/javascript">
+		var vid=$("#vid").text();
+		var value="{$info['dir']}";//需要改变
+				dp = new DPlayer({
+    				element: document.getElementById('player1'),                       // Optional, player element
+    				autoplay: false,                                                   // Optional, autoplay video, not supported by mobile browsers
+    				theme: '#FADFA3',                                                  // Optional, theme color, default: #b7daff
+    				loop: true,                                                        // Optional, loop play music, default: true
+    				lang: 'zh',                                                        // Optional, language, `zh` for Chinese, `en` for English, default: Navigator language
+    				screenshot: true,                                                  // Optional, enable screenshot function, default: false, NOTICE: if set it to true, video and video poster must enable Cross-Origin
+    				hotkey: true,                                                      // Optional, binding hot key, including left right and Space, default: true
+    				preload: 'auto',                                                   // Optional, the way to load music, can be 'none' 'metadata' 'auto', default: 'auto'
+    				video: {                                                           // Required, video info
+        				url: value,                                         // Required, video url
+        				pic: '{$info['img']}'                                          // Optional, music picture
+    				},
+    				danmaku: {                                                         // Optional, showing danmaku, ignore this option to hide danmaku
+        				id: vid,                                        // Required, danmaku id, NOTICE: it must be unique, can not use these in your new player: `https://api.prprpr.me/dplayer/list`
+        				api: 'http://dm.loli.mba:1024',                             // Required, danmaku api
+        				token: '{$token}',                                            // Optional, danmaku token for api
+        				maximum: 1000,                                                 // Optional, maximum quantity of danmaku IP base64
+    				}
+				});
+	</script>
+
+</div>
+
+<hr>
+
+<div class="row">
+    <include file="Public/comm" />
+</div>

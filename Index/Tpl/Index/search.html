@@ -1,0 +1,24 @@
+<include file="Public/head"/>
+<div class="row">
+	<div class="col-md-4 col-md-offset-4">
+		<form method="get" action="">
+			<div class="input-group">
+				<input type="search" name="search" class="form-control">
+				<div class="input-group-btn">
+					<button class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="row">
+	<volist name="info" id="vo">
+		<div class="row" style="background-color: #F2F2F2;margin: 10px;padding: 10px;border-radius: 5px;">
+			<a href="/index.php/Index/video/vid/{$vo['vid']}"><h4><span class="glyphicon glyphicon-film"></span> {$vo['name']}</h4></a>
+			<p> 发布于 <span class="glyphicon glyphicon-time"></span> {$vo['time']|date="Y-m-d H:i",###} 热度<span class="glyphicon glyphicon-signal"></span> {$vo['click']} <a href="{$vo['magnet']}"><span class="glyphicon glyphicon-magnet"></span></a></p>
+		</div>
+	</volist>
+	<div class="col-md-4 col-md-offset-4">
+		{$page}
+	</div>
+</div>

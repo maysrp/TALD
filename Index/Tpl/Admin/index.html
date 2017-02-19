@@ -1,0 +1,229 @@
+<script type="text/javascript" src="https://cdn.bootcss.com/blueimp-md5/2.6.0/js/md5.min.js"></script>
+<style type="text/css">
+	.list_one{
+		background: #F2F2F2;
+		border-radius: 10px;
+		margin: 10px;
+		padding: 10px;
+	}
+</style>
+<div class="row">
+	<div class="col-md-3">
+		<div class="row bg-primary video_all" style="padding: 10px;border-radius: 5px;margin: 10px;">
+			<h2>视频:<span class="count">{$count}</span></h2>
+		</div>
+		<div data-toggle="modal" data-target="#modal_control" class="row bg-danger control_all" style="padding: 10px;border-radius: 5px;margin: 10px;">
+			<h2>规则:{$control} </h2>
+		</div>
+		<div class="row bg-info text-center" style="padding: 10px;border-radius: 5px;margin: 10px;">
+			<button class="btn btn-danger" data-toggle="modal" data-target="#modal_change">修改密码</button>
+			<a href="/index.php/Admin/logout" class="btn btn-warning" >离开</a>
+		</div>
+	</div>
+
+
+	
+	<div class="col-md-9">
+				<div class="load_info">
+					
+				</div>
+				<div class="load_info_end text-center hide">
+					<div class="row"><button class="btn btn-danger " onClick="video_more()">MORE</button></div>
+				</div>
+	</div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="modal_change">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      	密码修改
+      </div>
+      <div class="modal-body">
+      	<input type="password" name="old" id="password_old" class="form-control key_blur" style="margin: 5px;" placeholder="旧密码">
+      	<input type="password" name="new" id="password_new" class="form-control key_blur" style="margin: 5px;" placeholder="新密码">
+      	<input type="password" name="new2" id="password_new2" class="form-control key_blur" style="margin: 5px;" placeholder="请再输入一次新密码">
+      </div>
+      <div class="modal-footer">
+      	<button class="btn btn-success change_btn">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="modal_control"  class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+      		<div class="modal-header">
+      			<h3 class="modal-title">规则</h3>
+      		</div>
+      		<div class="modal-body">
+        		<table class="table control_table">
+        			<tr>
+        				<th>ID</th>
+        				<th>配置</th>
+        				<th>删除</th>
+        			</tr>
+        			<volist name="info" id="vo">
+        				<tr class="c_{$vo['cid']}">
+        					<td>{$vo['cid']}</td>
+        					<td class="change" value="{$vo['cid']}">{$vo['control']}</td>
+        					<td><span class="glyphicon glyphicon-remove text-danger del_control" onClick="control_del({$vo['cid']})"></span></td>
+        				</tr>
+        			</volist>
+        		</table>
+        		<div class="input-group hide control_table_add">
+        			<input type="text" name="control" class="form-control control_info" placeholder="添加匹配规则">
+        			<div class="input-group-btn">
+        				<button class="btn btn-default control_add_btn" title="确认提交"><span class="glyphicon glyphicon-ok text-success"></span></button>
+        			</div>
+        		</div>
+        		<table class="table">
+        			<button class="btn btn-success control_add">
+        				添加控制 
+        				<span class="glyphicon glyphicon-plus"></span>
+        			</button>
+        		</table>
+      		</div>
+
+    	</div>
+	</div>
+	
+</div>
+
+
+
+
+<script type="text/javascript">
+	$(".key_blur").blur(function(){
+		var value=$(this).val();
+		$(this).val(md5(value));
+	})
+	$(".change_btn").click(function(){
+		var password_old=$("#password_old").val();
+		var password_new=$("#password_new").val();
+		var password_new2=$("#password_new2").val();
+		if(password_new!=password_new2){
+			alert("两次密码不相同！");
+		}else{
+			$.ajax({
+				url:"/index.php/Admin/change",
+				type:"POST",
+				data:{
+					old:password_old,
+					new:password_new2
+				},
+				success:function(data){
+					if(data.status){
+						alert("修改成功！");
+					}else{
+						alert(data.con);
+					}
+				}
+			})
+		}
+	})
+	$(".control_add_btn").click(function(){
+		var control_info=$(".control_info").val();
+		$(".control_info").val("");
+		$.ajax({
+			url:"/index.php/Admin/control_add/",
+			type:"POST",
+			data:{
+				add:control_info
+			},
+			success:function(data){
+				if(data){
+					var td_id=$("<td>"+data+"</td>");
+					var td_control=$("<td value=\""+data+"\" class=\"change\">"+control_info+"</td>");
+					var td_del=$("<td><span class=\"glyphicon glyphicon-remove text-danger del_control\" onClick=\"control_del("+data+")\"></span></td>");
+					var tr=$("<tr class=\"c_"+data+"\"></tr>");
+					td_id.appendTo(tr);
+					td_control.appendTo(tr);
+					td_del.appendTo(tr);
+					tr.appendTo(".control_table");
+				}
+			}
+		})
+
+		$(".control_table_add").addClass('hide');
+	})
+
+	$(".change").click(function(){
+		var cid=$(this).attr("value");
+		var value=$(this).text();
+		//$(".c_"+cid).addClass('hide');
+		$(".control_table_add").removeClass('hide');
+		$(".control_info").val(value);
+		//control_del(cid);
+	})
+
+	$(".control_add").click(function(){
+		$(".control_table_add").removeClass('hide');
+	})
+
+	$(".video_all").click(function(){
+		video_load(1);
+		$(".load_info_end").removeClass('hide');
+	})
+	var page=1;//视频页面
+	function control_del(cid){
+		$.ajax({
+			url:"/index.php/Admin/control_del/cid/"+cid,
+			type:"GET",
+			success:function(data){
+				if(data){
+					$(".c_"+cid).remove();
+				}
+			}
+		})
+	}
+	function video_load(page){
+		$.ajax({
+			url:"/index.php/Admin/video_load/page/"+page,
+			type:"GET",
+			success:function(data){
+				add_all(data);
+			}
+		})
+	}
+	function add_all(data){
+		if(data){
+			for (swap in data){
+				add_div(data[swap]);
+			}
+		}else{
+			$(".load_info_end").text("已经加载全部视频");
+		}
+	}
+	function add_div(data){
+		var div_cont=$("<div class=\"row list_one "+data.vid+"\"></div>");
+		var title=$("<a href=\"/index.php/Index/video/vid/"+data.vid+"\">ID:"+data.vid+"<h4><span class=\"glyphicon glyphicon-film\"></span> "+data.name+"</a></h4>");
+		var p=$("<p>热度 <span class=\"glyphicon glyphicon-signal\"> "+data.click+"</span> <a href=\""+data.magnet+"\"><span class=\"glyphicon glyphicon-magnet\"></span></a> <span  class=\"text-danger \" onClick=\"del_video("+data.vid+")\"><span class=\"glyphicon glyphicon-trash\" title=\"删除该视频\"></span></span></p>");
+		var p_image=$("<p><img width=\"300px\" src=\""+data.img+"\"></p>");
+
+		title.appendTo(div_cont);
+		p.appendTo(div_cont);
+		p_image.appendTo(div_cont);
+		div_cont.appendTo(".load_info");
+	}
+	function video_more(){
+		page=page+1;
+		video_load(page);
+	}
+	function del_video(vid){
+		$.ajax({
+			url:"/index.php/Admin/video_del/vid/"+vid,
+			type:"GET",
+			success:function(data){
+				if(data){
+					$("."+vid).addClass('hide');
+					var count=$(".count").text();
+					$(".count").text(count-1);
+				}
+			}
+		})
+	}
+</script>

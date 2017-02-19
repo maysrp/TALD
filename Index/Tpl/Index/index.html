@@ -1,0 +1,57 @@
+<style type="text/css">
+	.list_one{
+		background-color: #F2F2F2;
+		margin: 10px;
+		padding: 10px;
+		border-radius: 5px;
+	}
+</style>
+
+<include file="Public/head" />
+<include file="Public/search"/>
+<include file="Public/duo_top"/>
+<div class="row list_video">
+	
+</div>
+<div class="row text-center">
+	<button class="btn btn-info add_more_info"><span class="glyphicon glyphicon-chevron-right"></span> 更多内容  <span class="glyphicon glyphicon-chevron-left"></span></button>
+</div>
+<script type="text/javascript">
+	video_load(1);
+	var page=1;
+	function video_load(page){
+		$.ajax({
+			url:"/index.php/Index/video_load/page/"+page,
+			type:"GET",
+			success:function(data){
+				add_all(data);
+			}
+		})
+	}
+	function add_all(data){
+		if(data){
+			for (swap in data){
+				add_div(data[swap]);
+			}
+		}else{
+			$(".add_more").text("没有了");
+		}
+	}
+	function add_div(data){
+		var div_cont=$("<div class=\"row list_one\"></div>");
+		var title=$("<a href=\"/index.php/Index/video/vid/"+data.vid+"\"><h4><span class=\"glyphicon glyphicon-film\"></span> "+data.name+"</a></h4>");
+		var p=$("<p>热度 <span class=\"glyphicon glyphicon-signal\"> "+data.click+"</span> <a href=\""+data.magnet+"\"><span class=\"glyphicon glyphicon-magnet\"></span></a></p>");
+		var p_image=$("<p><img width=\"500px\" src=\""+data.img+"\"></p>");
+
+		title.appendTo(div_cont);
+		p.appendTo(div_cont);
+		p_image.appendTo(div_cont);
+		div_cont.appendTo(".list_video");
+	}
+	$(".add_more_info").click(function(){
+		page=page+1;
+		video_load(page);
+	})
+
+</script>
+
