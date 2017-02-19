@@ -89,6 +89,16 @@ $info中只要提交3个值
 
 spider() 用于调用sxp();
 
+### 评论 
+
+可以使用多说 有言 等评论模块
+
+/Index/Tpl/Public/comm.html    每个视频下显示评论
+
+/Index/Tpl/Public/duo_top.html   首先显示最新评论[仅800分辨率以上的设备显示]
+
+
+
 
 
 ## 感谢
@@ -96,3 +106,5 @@ spider() 用于调用sxp();
 [Php-aria2] (https://github.com/shiny/php-aria2)
 [Dplayer] (https://github.com/DIYgod/DPlayer)
 [PHPQuery] (https://github.com/TobiaszCudnik/phpquery)
+
+==== 未完待续 ====
