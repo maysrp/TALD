@@ -75,6 +75,21 @@ http://your_domain/index.php/Admin/login
 
 进入后台 管理视频时候请注意了 如果采用old 方法时删除视频不带删除 源视频，即/download下的视频将会保持。
 
+### 采集
+/Index/Lib/Action/OndoAction.class.php
+
+sxp()方法中
+sxp 使用PHPQuery分析网页，取出其中的下载信息$info。
+
+$info中只要提交3个值
+* $info['type']: 类型 取自你采集的页面中，用于初步判断，如果你采集的页面没有的话请将133行改中if判断改成true。
+* $info['magnet']: 下载地址
+* $info['name']: 下载文件名
+递交给 auto_download($info) 即可下载 。
+
+spider() 用于调用sxp();
+
+
 
 ## 感谢
 [Thinkphp 3.1.3] (http://www.thinkphp.cn/) 
