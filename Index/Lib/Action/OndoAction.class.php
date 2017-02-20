@@ -153,15 +153,28 @@
 			$this->auto_download($info);
 			}
     	}
-    	protected function admin_control($info){//管理员规则控制
+	protected function admin_control($info){//管理员规则控制
     		$control_array=D('Control')->select();
     		foreach ($control_array as $key => $value) {//$value['control']
-    			$pg="/".$value['control']."/i";
-    			if(preg_match($pg, $info)){
+    			if($this->tag_match($value['control'],$info)){
     				return true;//匹配到跳出返回1
     			}	
     		}
     	}
+    	protected function tag_match($control,$info){//管理员 多标签 控制下载
+   		$control=trim($control);
+    		$tag=preg_replace('/\s+/', ' ', $control);
+			$tag_array=explode(" ", $tag);
+			foreach ($tag_array as $key => $value) {
+				$pg="/".$value."/i";
+				if(!preg_match($pg, $info)){
+    				return false;
+    				}
+				return true;
+			}
+
+    	}
+
     	protected function ffmpeg_jpg($video,$time,$image){
     		$exec="/usr/bin/avconv -ss ".$time." -i ".$video." -t 0.01 -f image2 -y ".$image;
     		@exec($exec);
