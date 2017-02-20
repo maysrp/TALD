@@ -55,7 +55,14 @@ class IndexAction extends Action {
     }
     protected function sea($info){
     	$info=trim($info);
-    	$where['name']=array('like','%'.$info.'%');
+	$tag=preg_replace('/\s+/', ' ', $info);
+	$tag_array=explode(" ", $tag);
+	$pg=array();
+    	foreach($tag_array as $value){
+		$pg[]='%'.$value.'%';	
+	}
+    	$where['name']=array('like',$pg,'AND');
     	return D('video')->where($where)->select();
+
     }
 }
