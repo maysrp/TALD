@@ -20,5 +20,10 @@
 			$where['img_array']=array('between',array('','null'));
 			return $this->where($where)->limit(5)->select();
 		}
+		function ten(){
+			$where['img']=array('neq','a.jpg');
+			$info=$this->where($where)->order("click")->limit(5)->select();
+			return $info;
+		}
 
 	}
