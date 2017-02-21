@@ -19,6 +19,9 @@
 			<button class="btn btn-danger" data-toggle="modal" data-target="#modal_change">修改密码</button>
 			<a href="/index.php/Admin/logout" class="btn btn-warning" >离开</a>
 		</div>
+		<div class="row bg-success text-center" style="padding: 10px;border-radius: 5px;margin: 10px;">
+			<button class="btn btn-success aria2">Aria2进程</button>
+		</div>
 	</div>
 
 
@@ -46,12 +49,56 @@
       	<input type="password" name="new2" id="password_new2" class="form-control key_blur" style="margin: 5px;" placeholder="请再输入一次新密码">
       </div>
       <div class="modal-footer">
-      	<button class="btn btn-success change_btn">提交</button>
+      	<button class="btn btn-success change_btn" >提交</button>
       </div>
     </div>
   </div>
 </div>
 
+
+<div class="modal fade aria2_control" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">Aria2后台下载进程</div>
+      <div class="modal-body">
+		<div class="row" style="margin: 10px;">
+			<input type="text" name="magnet_name" class="magnet_name form-control " placeholder="MAGNET 的文件名 例如:『珈百璃的堕落 ガヴリールドロップアウト』ED片尾曲" style="margin-bottom:10px; ">				
+			<div class="input-group">
+				<input type="text" name="magnet_uri" class="magnet_uri form-control " placeholder="MAGNET  的地址 例如:magnet:?xt=urn:btih:2fffb617d9acd3b1d28f697e2b34da659e7846f1">		
+				<div class="input-group-addon magnet_up">
+					<span class="glyphicon glyphicon-ok text-success "></span>
+				</div>		
+			</div>
+		</div>
+		<div class="row aria2_active" style="margin: 10px;">
+			<H3>进行中的任务  <span onClick="aria2_re()" class="glyphicon glyphicon-refresh text-success"></span></H3>
+			<table class="table table_active">
+				<tr>
+					<th>任务名</th>
+					<th title="title">已经完成/总量</th>
+					<th>速度</th>
+					<th>操作</th>
+				</tr>
+			</table>
+		</div>
+		<div class="row aria2_waiting" style="margin: 10px;">
+			<h3>等待中的任务</h3>
+			<table class="table table_waiting">
+				<tr>
+					<th>任务名</th>
+					<th title="title">已经完成/总量</th>
+					<th>速度</th>
+					<th>操作</th>
+				</tr>
+			</table>
+		</div>      	
+      </div>
+      <div class="modal-footer">
+      	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="modal_control"  class="modal fade">
 	<div class="modal-dialog">
@@ -76,16 +123,16 @@
         		</table>
         		<div class="input-group hide control_table_add">
         			<input type="text" name="control" class="form-control control_info" placeholder="添加匹配规则">
-        			<div class="input-group-btn">
+        			<div class="input-group-btn" >
         				<button class="btn btn-default control_add_btn" title="确认提交"><span class="glyphicon glyphicon-ok text-success"></span></button>
         			</div>
         		</div>
-        		<table class="table">
+      		</div>
+      		<div class="modal-footer">
         			<button class="btn btn-success control_add">
         				添加控制 
         				<span class="glyphicon glyphicon-plus"></span>
         			</button>
-        		</table>
       		</div>
 
     	</div>
@@ -124,6 +171,31 @@
 				}
 			})
 		}
+	})
+	$(".magnet_up").click(function(){
+		var name=$(".magnet_name").val();
+		var magnet=$(".magnet_uri").val();
+		if(name && magnet ){
+			$.ajax({
+				url:"/index.php/Admin/magnet_add",
+				type:"POST",
+				data:{
+					name:name,
+					magnet:magnet
+				},
+				success:function(data){
+					$(".magnet_name").val("");
+					$(".magnet_uri").val("");
+					if(data.result){
+						alert("你已经添加一个任务");
+						aria2_re();
+					}else{
+						alert(data.error);
+					}
+				}
+			})
+		}
+
 	})
 	$(".control_add_btn").click(function(){
 		var control_info=$(".control_info").val();
@@ -168,6 +240,98 @@
 		video_load(1);
 		$(".load_info_end").removeClass('hide');
 	})
+	$(".aria2").click(function(){
+		$(".aria2_control").modal('show');
+		aria2_re();
+
+	})
+
+	function aria2_re(){
+		if($(".aria2_load")){
+			$(".aria2_load").remove();
+		}
+		aria2_achieve();
+	}
+	function aria2_achieve(){
+		$.ajax({
+			url:"/index.php/Admin/aria2_control",
+			success:function(data){
+				table(data.active,"active");
+				table(data.waiting,"waiting");
+			}
+		})
+	}
+
+	function table(data,type){
+		for (x in data){
+			var tr=$("<tr class=\"aria2_load\"></tr>");
+			var td_name=$("<td>"+data[x].bittorrent.info.name+"</td>");
+			var td_total=$("<td title=\""+Math.floor(data[x].completedLength/data[x].totalLength*10000)/100+"%\">"+size_show(data[x].completedLength)+"/"+size_show(data[x].totalLength)+"</td>");
+			var td_speed=$("<td>"+size_show(data[x].downloadSpeed)+"/S</td>");
+			if(type=="active"){
+				var td_cz=$("<td><span class=\"glyphicon glyphicon-pause text-primary\" onClick=\"stop(\'"+data[x].gid+"\')\" ></span> <span class=\"glyphicon glyphicon-trash text-danger\" onClick=\"del(\'"+data[x].gid+"\')\" ></span></td>");
+			}else{
+				var td_cz=$("<td><span class=\"glyphicon glyphicon-ok text-success\" onClick=\"active(\'"+data[x].gid+"\')\" ></span> <span class=\"glyphicon glyphicon-trash text-danger\" onClick=\"del(\'"+data[x].gid+"\')\" ></span></td>");
+			}
+			td_name.appendTo(tr);
+			td_total.appendTo(tr);
+			td_speed.appendTo(tr);
+			td_cz.appendTo(tr);
+			tr.appendTo(".table_"+type);
+
+		}
+	}
+	function active(gid){
+		$.ajax({
+			url:"/index.php/Admin/aria2_active/gid/"+gid,
+			success:function(data){
+				if(data.result){
+					aria2_re();
+				}else{
+					alert("启动失败");
+				}
+			}
+		})
+	}
+	function stop(gid){
+		$.ajax({
+			url:"/index.php/Admin/aria2_stop/gid/"+gid,
+			success:function(data){
+				if(data.result){
+					aria2_re();
+				}else{
+					alert("停止失败，该任务可能未启动");
+				}
+			}
+		})
+	}
+	function del(gid){
+		$.ajax({
+			url:"/index.php/Admin/aria2_del/gid/"+gid,
+			success:function(data){
+				if(data.result){
+					aria2_re();
+				}else{
+					alert("删除失败");
+				}
+			}
+		})
+	}
+	function size_show(file_size){
+		if(file_size>Math.pow(2,30)){
+			var size=Math.floor(file_size/Math.pow(2,30)*100)/100;
+			return size+"GB";
+		}else if(file_size>Math.pow(2,20)){
+			 var size=Math.floor(file_size/Math.pow(2,20)*100)/100;
+			return size+"MB";
+		}else if(file_size>Math.pow(2,10)){
+			var size=Math.floor(file_size/Math.pow(2,10)*100)/100;
+			return size+"KB";
+		}else{
+			return file_size+"B";
+		}
+	}
+
 	var page=1;//视频页面
 	function control_del(cid){
 		$.ajax({
@@ -226,4 +390,5 @@
 			}
 		})
 	}
+
 </script>
