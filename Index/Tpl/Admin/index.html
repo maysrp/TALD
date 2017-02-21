@@ -242,10 +242,13 @@
 	})
 	$(".aria2").click(function(){
 		$(".aria2_control").modal('show');
-		aria2_re();
+			aria2_re();
+			a_r=setInterval('aria2_re()',30000);//定时刷新
 
 	})
-
+	$(".aria2_control").on('hide.bs.modal',function(e){
+		clearInterval(a_r);
+	})
 	function aria2_re(){
 		if($(".aria2_load")){
 			$(".aria2_load").remove();
