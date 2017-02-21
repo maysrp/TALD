@@ -1,7 +1,10 @@
 <?php
 	class AdminAction extends Action{
+		public $Aria2;
 		public function __construct(){
 			parent::__construct();
+			include_once("Aria2.php");
+			$this->Aria2=new Aria2('http://127.0.0.1:6800/jsonrpc');//只有开启后才有用。
 		}
 		protected function auth(){
 			$auth=$this->_session('auth');
@@ -115,5 +118,66 @@
 			$cid=$this->_get('cid');
 			$type=D('Control')->delete($cid);
 			$this->ajaxReturn($type);//AJAX
+		}
+		function magnet_add(){//手动添加剂一个信息
+			$this->auth_false();
+			$magnet=$this->_post('magnet');
+			$name=$this->_post('name');
+			$re=$this->add_one($magnet,$name);
+			$this->ajaxReturn($re);
+		}
+		function aria2_control(){
+			$this->auth_false();
+			$active=$this->Aria2->tellActive();
+			$waiting=$this->Aria2->tellWaiting(0,100);
+			$info['active']=$active['result'];
+			$info['waiting']=$waiting['result'];
+			$this->ajaxReturn($info);
+		}
+		function aria2_del(){//删除
+			$this->auth_false();
+			$gid=$this->_get('gid');
+			$gid=trim($gid);
+			$info=$this->Aria2->remove($gid);
+			$this->ajaxReturn($info);
+			//success: array(3) { ["id"]=> string(1) "1" ["jsonrpc"]=> string(3) "2.0" ["error"]=> array(2) { ["code"]=> int(1) ["message"]=> string(41) "GID#460118a5260319dc cannot be paused now" } }
+			//error: array(3) { ["id"]=> string(1) "1" ["jsonrpc"]=> string(3) "2.0" ["result"]=> string(16) "e92d8122633f306b" }
+		}
+		function aria2_stop(){//停止
+			$this->auth_false();
+			$gid=$this->_get('gid');
+			$gid=trim($gid);
+			$info=$this->Aria2->pause($gid);
+			$this->ajaxReturn($info);
+		}
+		function aria2_active(){//启动
+			$this->auth_false();
+			$gid=$this->_get('gid');
+			$gid=trim($gid);
+			$info=$this->Aria2->unpause($gid);
+			$this->ajaxReturn($info);
+		}
+		protected function add_one($magnet,$name){//下载入口
+			$is_magnet=$this->jugg_aria2($magnet);//若已经存在则不下载
+			if(!$is_magnet){
+				$re=$this->add_aria2($magnet,$name);
+				return $re;
+			}else{
+				$re['error']="该下载链接已经存在";
+				return $re;
+			}
+		}
+		protected function add_aria2($magnet,$name){//下载模块
+			$dir=$this->dir_name($magnet);
+			D('Pre')->add_one($magnet,$dir,$name);
+			$re=$this->Aria2->addUri(array($magnet),array('dir'=>$dir));
+			return $re;
+		}
+		protected function jugg_aria2($magnet){//判断是否已经下载
+			$jugg=D('Pre')->jugg($magnet);
+			return $jugg;
+		}
+		protected function dir_name($magnet){//生成下载地址
+			return DIR."/download/".md5($magnet);
 		}
 	}
