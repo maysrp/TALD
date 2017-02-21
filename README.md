@@ -59,13 +59,16 @@ danmu.sql 导入你的数据库中
 ###后台
 
 
-
 http://your_domain/index.php/Admin/login
 
 后台文件 /Index/Lib/Action/AdminAction.class.php
 
 
 默认: admin 233
+
+<img src="http://bilibara.com/images/2017/02/21/back_guizhe.png" alt="back_guizhe.png" border="0">
+<img src="http://bilibara.com/images/2017/02/21/back_a.png" alt="back_a.png" border="0">
+<img src="http://bilibara.com/images/2017/02/21/back.png" alt="back.png" border="0">
 
 #### 验证登入
 
