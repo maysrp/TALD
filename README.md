@@ -65,10 +65,19 @@ http://your_domain/index.php/Admin/login
 
 
 默认: admin 233
+#### 界面以及功能
+![back.png](http://bilibara.com/images/2017/02/21/back.png)
 
-<img src="http://bilibara.com/images/2017/02/21/back_guizhe.png" alt="back_guizhe.png" border="0">
-<img src="http://bilibara.com/images/2017/02/21/back_a.png" alt="back_a.png" border="0">
-<img src="http://bilibara.com/images/2017/02/21/back.png" alt="back.png" border="0">
+可以加载全部视频对其删除管理
+
+
+![back_guizhe.png](http://bilibara.com/images/2017/02/21/back_guizhe.png)
+
+可以添加采集中的规则，每个规则可以匹配多个关键词，关键词间请用空格风格开。
+
+
+![back_a.png](http://bilibara.com/images/2017/02/21/back_a.png)
+Aria2后台，可以自行添加下载地址[人工添加不会触发规则请放心加入]，后台下载完成后会自动检索出MP4视频文件发布。
 
 #### 验证登入
 
@@ -81,16 +90,16 @@ http://your_domain/index.php/Admin/login
 ### 采集
 /Index/Lib/Action/OndoAction.class.php
 
-sxp()方法中
-sxp 使用PHPQuery分析网页，取出其中的下载信息$info。
+采集本次中并未列出，需要大家自己添加,
 
+sxp()中可以使用PHPQuery分析网页，取出其中的下载信息$info，也可以用其他程序导入数据。[请自行设计]
 $info中只要提交3个值
 * $info['type']: 类型 取自你采集的页面中，用于初步判断，如果你采集的页面没有的话请将133行改中if判断改成true。
 * $info['magnet']: 下载地址
 * $info['name']: 下载文件名
 递交给 auto_download($info) 即可下载 。
 
-spider() 用于调用sxp();
+spider() 用于调用sxp();[通过时间触发]
 
 ### 评论 
 
@@ -101,9 +110,9 @@ spider() 用于调用sxp();
 /Index/Tpl/Public/duo_top.html   首先显示最新评论[仅800分辨率以上的设备显示]
 
 
+### 播放器
 
-
-
+运用[Dplayer] (https://github.com/DIYgod/DPlayer)，可以弹幕可以截图等非常强大。请点击[Dplayer] (https://github.com/DIYgod/DPlayer)查看相关搭建文档
 ## 感谢
 [Thinkphp 3.1.3] (http://www.thinkphp.cn/) 
 [Php-aria2] (https://github.com/shiny/php-aria2)
