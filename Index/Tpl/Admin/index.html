@@ -368,8 +368,8 @@
 	function add_div(data){
 		var div_cont=$("<div class=\"row list_one "+data.vid+"\"></div>");
 		var title=$("<a href=\"/index.php/Index/video/vid/"+data.vid+"\">ID:"+data.vid+"<h4><span class=\"glyphicon glyphicon-film\"></span> "+data.name+"</a></h4>");
-		var p=$("<p>热度 <span class=\"glyphicon glyphicon-signal\"> "+data.click+"</span> <a href=\""+data.magnet+"\"><span class=\"glyphicon glyphicon-magnet\"></span></a> <span  class=\"text-danger \" onClick=\"del_video("+data.vid+")\"><span class=\"glyphicon glyphicon-trash\" title=\"删除该视频\"></span></span></p>");
-		var p_image=$("<p><img width=\"300px\" src=\""+data.img+"\"></p>");
+		var p=$("<p>热度 <span class=\"glyphicon glyphicon-signal\"> "+data.click+"</span> <a href=\""+data.magnet+"\"><span class=\"glyphicon glyphicon-magnet\"></span></a> <span  class=\"text-success \" onClick=\"image_video("+data.vid+")\"><span class=\"glyphicon glyphicon-picture\" title=\"重新生成截图\"></span></span> <span  class=\"text-danger \" onClick=\"del_video("+data.vid+")\"><span class=\"glyphicon glyphicon-trash\" title=\"删除该视频\"></span></span></p>");
+		var p_image=$("<p><img width=\"300px\" class=\"img-rounded vid_"+data.vid+"\" src=\""+data.img+"\"></p>");
 
 		title.appendTo(div_cont);
 		p.appendTo(div_cont);
@@ -389,6 +389,19 @@
 					$("."+vid).addClass('hide');
 					var count=$(".count").text();
 					$(".count").text(count-1);
+				}
+			}
+		})
+	}
+	function image_video(vid){
+		$.ajax({
+			url:"/index.php/Admin/image_change/vid/"+vid,
+			success:function(data){
+				if(data.status){
+					$(".vid_"+vid).attr("src",data.con);
+					//alert(data.con);
+				}else{
+					alert(data.con);
 				}
 			}
 		})
