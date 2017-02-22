@@ -157,6 +157,54 @@
 			$info=$this->Aria2->unpause($gid);
 			$this->ajaxReturn($info);
 		}
+		function image_change(){
+			$this->auth_false();
+			$vid=$this->_get('vid');
+			$re=$this->image($vid);
+			$this->ajaxReturn($re);
+
+		}
+		protected function image_sql($image_array,$vid){
+    		foreach ($image_array as $key => $value) {
+    			if(is_file(DIR.$value)){
+    				$img_array[]=$value;
+    			}
+    		}
+    		$akey=array_rand($img_array,1);
+    		$save['img']=$img_array[$akey];
+    		$save['img_array']=json_encode($img_array);
+    		$save['vid']=$vid;
+    		D('Video')->save($save);
+    		return $save['img'];
+
+    	}
+    	protected function image($vid){
+    		$info=D('Video')->find($vid);
+    		if(!$info){
+    			$re['status']=false;
+    			$re['con']="无该视频";
+    			return $re;
+    		}
+    		$video=$info['dir'];
+    		$image_array="";
+    		for ($i=0; $i <10 ; $i++) { 
+    			$time=$i*60;
+    			$r=mt_rand(1,999);
+    			$rd="_".$r."_";
+    			$image=DIR."/image/".$vid.$rd.$i.".jpg";
+    			$this->ffmpeg_jpg($video,$time,$image);	
+    			$image_array[]="/image/".$vid.$rd.$i.".jpg";
+    		}
+    		$im=$this->image_sql($image_array,$vid);//写入数据库
+    		$re['status']=true;
+    		$re['con']=$im;
+    		return $re;
+
+    	}
+    	protected function ffmpeg_jpg($video,$time,$image){
+    		$exec="/usr/bin/avconv -ss ".$time." -i ".$video." -t 0.01 -f image2 -y ".$image;
+    		@exec($exec);
+    	}
 		protected function add_one($magnet,$name){//下载入口
 			$is_magnet=$this->jugg_aria2($magnet);//若已经存在则不下载
 			if(!$is_magnet){
