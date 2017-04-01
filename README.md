@@ -112,7 +112,9 @@ spider() 用于调用sxp();[通过时间触发]
 
 ### 播放器
 
-运用[Dplayer] (https://github.com/DIYgod/DPlayer)，可以弹幕可以截图等非常强大。请点击[Dplayer] (https://github.com/DIYgod/DPlayer)查看相关搭建文档
+运用[Dplayer](https://github.com/DIYgod/DPlayer)，可以弹幕可以截图等非常强大。
+
+请点击[Dplayer](https://github.com/DIYgod/DPlayer)查看相关搭建文档
 ## 感谢
 [Thinkphp 3.1.3](http://www.thinkphp.cn/) 
 [Php-aria2](https://github.com/shiny/php-aria2)
