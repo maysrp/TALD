@@ -88,7 +88,7 @@ Aria2后台，可以自行添加下载地址[人工添加不会触发规则请�
 进入后台 管理视频时候请注意了 如果采用old 方法时删除视频不带删除 源视频，即/download下的视频将会保持。
 
 ### 采集
-/Index/Lib/Action/OndoAction.class.php
+/Index/Lib/Action/OndoAction.class.php -放弃吧少年-
 
 采集本次中并未列出，需要大家自己添加,
 
@@ -114,9 +114,10 @@ spider() 用于调用sxp();[通过时间触发]
 
 运用[Dplayer] (https://github.com/DIYgod/DPlayer)，可以弹幕可以截图等非常强大。请点击[Dplayer] (https://github.com/DIYgod/DPlayer)查看相关搭建文档
 ## 感谢
-[Thinkphp 3.1.3] (http://www.thinkphp.cn/) 
-[Php-aria2] (https://github.com/shiny/php-aria2)
-[Dplayer] (https://github.com/DIYgod/DPlayer)
-[PHPQuery] (https://github.com/TobiaszCudnik/phpquery)
+[Thinkphp 3.1.3](http://www.thinkphp.cn/) 
+[Php-aria2](https://github.com/shiny/php-aria2)
+[Dplayer](https://github.com/DIYgod/DPlayer)
+[PHPQuery](https://github.com/TobiaszCudnik/phpquery)
+
 
 ==== 未完待续 ====
