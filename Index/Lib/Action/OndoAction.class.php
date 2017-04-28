@@ -151,7 +151,7 @@
 
 			*/
 			$this->auto_download($info);
-			}
+			
     	}
 	protected function admin_control($info){//管理员规则控制
     		$control_array=D('Control')->select();
